@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kawwa Kader Jump Game</title>
+    <style>
+        canvas {
+            border: 2px solid black;
+            display: block;
+            margin: 0 auto;
+            background-color: lightblue;
+        }
+        body {
+            text-align: center;
+        }
+        h1 {
+            font-family: sans-serif;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Kawwa Kader Jump Game</h1>
+<canvas id="gameCanvas" width="800" height="400"></canvas>
+
+<script>
+    // Game settings
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Load the crow image
+    const crowImage = new Image();
+    crowImage.src = 'images/kawwa.png';
+
+    // Sound
+    const crowSound = new Audio('sounds/crow.mp3');
+
+    // Variables for the game
+    let crow = { x: 50, y: 300, radius: 25, dy: 0, jumpStrength: 15, gravity: 0.8 };
+    let isJumping = false;
+    let ponds = [];
+    let isGameOver = false;
+    let score = 0;
+
+    // Function to reset the game
+    function resetGame() {
+        crow.x = 50;
+        crow.y = 300;
+        crow.dy = 0;
+        ponds = [{ x: 800, width: 100, height: 40 }];
+        isGameOver = false;
+        score = 0;
+    }
+
+    // Function to draw the crow as a circular shape
+    function drawCrow() {
+        // Draw a circle
+        ctx.beginPath();
+        ctx.arc(crow.x + crow.radius, crow.y + crow.radius, crow.radius, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.clip();
+
+        // Draw the crow image inside the circular area
+        ctx.drawImage(crowImage, crow.x, crow.y, crow.radius * 2, crow.radius * 2);
+
+        // Reset the clipping area
+        ctx.restore();
+    }
+
+    // Function to draw the ponds
+    function drawPonds() {
+        ctx.fillStyle = 'blue';
+        ponds.forEach(pond => {
+            ctx.fillRect(pond.x, canvas.height - pond.height, pond.width, pond.height);
+        });
+    }
+
+    // Function to update game objects
+    function update() {
+        if (isGameOver) return;
+
+        // Apply gravity
+        crow.dy += crow.gravity;
+        crow.y += crow.dy;
+
+        // Check if crow is on the ground
+        if (crow.y + crow.radius * 2 >= canvas.height) {
+            crow.y = canvas.height - crow.radius * 2;
+            isJumping = false;
+        }
+
+        // Move the ponds
+        ponds.forEach(pond => {
+            pond.x -= 5;
+
+            // Check if crow hits a pond
+            if (crow.x + crow.radius > pond.x &&
+                crow.x < pond.x + pond.width &&
+                crow.y + crow.radius * 2 > canvas.height - pond.height) {
+                gameOver();
+            }
+        });
+
+        // Remove off-screen ponds
+        ponds = ponds.filter(pond => pond.x + pond.width > 0);
+
+        // Generate new ponds
+        if (ponds.length === 0 || ponds[ponds.length - 1].x < 600) {
+            const pondWidth = Math.random() * 50 + 50;
+            ponds.push({ x: 800, width: pondWidth, height: 40 });
+        }
+
+        // Update score
+        score += 1;
+    }
+
+    // Function to draw the game
+    function draw() {
+        // Clear the canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Save the canvas context state for clipping
+        ctx.save();
+
+        // Draw the crow and ponds
+        drawCrow();
+        drawPonds();
+
+        // Draw the score
+        ctx.font = '20px Arial';
+        ctx.fillStyle = 'black';
+        ctx.fillText(`Score: ${score}`, 10, 30);
+    }
+
+    // Function to handle game over
+    function gameOver() {
+        isGameOver = true;
+        crowSound.play();
+
+        ctx.font = '30px Arial';
+        ctx.fillStyle = 'red';
+        ctx.fillText('Game Over! Press any key or click to restart', 150, 200);
+    }
+
+    // Game loop
+    function gameLoop() {
+        update();
+        draw();
+
+        requestAnimationFrame(gameLoop);
+    }
+
+    // Start the game loop
+    gameLoop();
+
+    // Event listener for jump and restart
+    document.addEventListener('keydown', function() {
+        if (!isGameOver) {
+            if (!isJumping) {
+                crow.dy = -crow.jumpStrength;
+                isJumping = true;
+            }
+        } else {
+            resetGame(); // Restart game when any key is pressed
+        }
+    });
+
+    // Event listener for mouse click to restart the game
+    document.addEventListener('click', function() {
+        if (isGameOver) {
+            resetGame(); // Restart game on mouse click
+        }
+    });
+</script>
+
+</body>
+</html>

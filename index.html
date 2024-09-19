@@ -28,6 +28,11 @@
 <body>
     <h1>Click an Animal to Hear Its Sound</h1>
 
+  
+    <div class="kawwagame" id="kawwagame">
+        <button id="kawwaGameButton">Kawwa Game</button>
+    </div>
+
     <div class="animal" id="dog">
         <img src="images/dog.png" alt="Dog">
         <h2>Dog</h2>
@@ -72,6 +77,13 @@
             crowSound.play();
         });
 
+
+
+        // Event listener for the button
+        document.getElementById('kawwaGameButton').addEventListener('click', function() {
+            window.location.href = 'kawwa_game.html'; // Redirect to kawwa_game.html
+        });
+   
 
     </script>
 </body>
