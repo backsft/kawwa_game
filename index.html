@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animal Sounds</title>
+    <style>
+        .animal {
+            display: inline-block;
+            margin: 20px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .animal img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .animal h2 {
+            font-size: 20px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Click an Animal to Hear Its Sound</h1>
+
+    <div class="animal" id="dog">
+        <img src="images/dog.png" alt="Dog">
+        <h2>Dog</h2>
+    </div>
+
+    <div class="animal" id="cat">
+        <img src="images/cat.png" alt="Cat">
+        <h2>Cat</h2>
+    </div>
+
+    <div class="animal" id="cow">
+        <img src="images/cow.png" alt="Cow">
+        <h2>Cow</h2>
+    </div>
+
+    <div class="animal" id="crow">
+        <img src="images/kawwa.png" alt="Cow">
+        <h2>Kawwa Kader</h2>
+    </div>
+
+    <script>
+        // Load animal sounds from local files
+        const dogSound = new Audio('sounds/dog.wav');
+        const catSound = new Audio('sounds/cat.wav');
+        const cowSound = new Audio('sounds/cow.wav');
+        const crowSound = new Audio('sounds/crow.mp3');
+
+        // Add event listeners to play sounds when images are clicked
+        document.getElementById('dog').addEventListener('click', function() {
+            dogSound.play();
+        });
+
+        document.getElementById('cat').addEventListener('click', function() {
+            catSound.play();
+        });
+
+        document.getElementById('cow').addEventListener('click', function() {
+            cowSound.play();
+        });
+
+        document.getElementById('crow').addEventListener('click', function() {
+            crowSound.play();
+        });
+
+
+    </script>
+</body>
+</html>
